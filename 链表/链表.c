@@ -59,7 +59,7 @@ void PrintList_L(LNode *Lhead) {
 	}
 }
 
-void GetElem_L(LNode *Lhead, int i) {
+void GetElem_L(LNode *Lhead, int i) {  //算法2.08
 	int num = 0;
 	if (i <= 0)
 	{
@@ -81,7 +81,7 @@ void GetElem_L(LNode *Lhead, int i) {
 	return 0;
 }
 
-void ListInsert_L(LNode *Lhead, int i, int e) {
+void ListInsert_L(LNode *Lhead, int i, int e) {  //算法2.09
 	int num = 0;
 	LNode *p1;
 	
@@ -90,16 +90,12 @@ void ListInsert_L(LNode *Lhead, int i, int e) {
 		printf("Lhead is empty list\n");
 		return 0;
 	}
-	while (Lhead != NULL)
+	while (Lhead != NULL && num < i-2)  //Lhead要取到第i个节点前面的节点
 	{
 		num++;
-		if (num == i-1)
-		{
-			break;
-		}
 		Lhead = Lhead->next;
 	}
-	if (num < i-1)
+	if (num < i-2)
 	{
 		printf("i is more big than list length\n");
 		return 0;
@@ -112,6 +108,34 @@ void ListInsert_L(LNode *Lhead, int i, int e) {
 	return 1;
 }
 
+void ListDelete_L(LNode *Lhead, int i) {   //算法2.10
+	int num = 0;
+	LNode *p1;
+	p1 = (int *)malloc(sizeof(LNode));
+	while (Lhead != NULL && num < i-2)  //Lhead要取到第i个节点前面的节点
+	{
+		num++;
+		Lhead = Lhead->next;
+	}
+	if (num < i - 2)
+	{
+		printf("i is more big than list length\n");
+		return 0;
+	}
+	p1 = Lhead->next;
+	Lhead->next = p1->next;
+	free(p1);  //放空节点，但节点存在，next为null;p1 = null 可以置空；
+	if (p1 == NULL)
+	{
+		printf("p1 is empty\n");
+	}
+	else
+	{
+		printf("not\n");
+	}
+	return 1;
+}
+
 int main() {
 	LNode *La , Lb, Lc;
 	int i, e, o = 1;
@@ -121,6 +145,7 @@ int main() {
 		printf("(2)输出链表\n");
 		printf("(3)输出链表第i个值\n");
 		printf("(4)链表第i个元素之前插入元素e\n");
+		printf("(5)移除链表第i个元素\n");
 		printf("(0)退出\n");
 
 		scanf("%d", &o);
@@ -147,6 +172,11 @@ int main() {
 			scanf("%d", &i);
 			scanf("%d", &e);
 			ListInsert_L(La, i, e);
+			break;
+		case 5:
+			printf("移除链表第i个元素\n");
+			scanf("%d", &i);
+			ListDelete_L(La, i);
 			break;
 		case 0:
 			break;
