@@ -42,7 +42,7 @@ LNode *CreatList_L(LNode *Lhead) {
 		p1->next = NULL;
 	}
 	printf("链表创建完成\n");
-	return Lhead;    //返回链表的头指针
+	return Lhead;    //返回链表的首元节点
 }
 
 void PrintList_L(LNode *Lhead) {
@@ -66,19 +66,18 @@ void GetElem_L(LNode *Lhead, int i) {  //算法2.08
 		printf("value is illegal\n");
 		return 0;
 	}
-	while (Lhead != NULL)
+	while (Lhead != NULL && num < i-1)
 	{
 		num++;
-		if (num == i)
-		{
-			printf("值为:%d\n", Lhead->data);
-			return 1;
-		}
-		//printf("%d\n", Lhead->data);
 		Lhead = Lhead->next;
 	}
-	printf("value inexitence\n");
-	return 0;
+	if (num < i-1)
+	{
+		printf("i is more big than list length\n");
+		return 0;
+	}
+	printf("值为:%d\n", Lhead->data);
+	return 1;
 }
 
 void ListInsert_L(LNode *Lhead, int i, int e) {  //算法2.09
@@ -124,20 +123,29 @@ void ListDelete_L(LNode *Lhead, int i) {   //算法2.10
 	}
 	p1 = Lhead->next;
 	Lhead->next = p1->next;
-	free(p1);  //放空节点，但节点存在，next为null;p1 = null 可以置空；
-	if (p1 == NULL)
-	{
-		printf("p1 is empty\n");
-	}
-	else
-	{
-		printf("not\n");
-	}
+	free(p1);  //放空节点，但节点存在，next为null;p1 = null 可以置空
+	printf("delete successful\n");
 	return 1;
 }
 
+LNode *ReverseCreateList_L(LNode *Lhead, int n) {
+	int i = 0;
+	LNode *p1;
+	Lhead = (int *)malloc(sizeof(LNode));
+	Lhead->next = NULL;
+	for ( i; i < n; i++)
+	{
+		p1 = (int *)malloc(sizeof(LNode));
+		p1->data = rand()%10;  //random function
+		p1->next = Lhead->next;
+		Lhead->next = p1;
+	}
+	printf("creatList successful\n");
+	return Lhead->next;
+}
+
 int main() {
-	LNode *La , Lb, Lc;
+	LNode *La , *Lb, Lc;
 	int i, e, o = 1;
 	while (o != 0)
 	{
@@ -146,6 +154,7 @@ int main() {
 		printf("(3)输出链表第i个值\n");
 		printf("(4)链表第i个元素之前插入元素e\n");
 		printf("(5)移除链表第i个元素\n");
+		printf("(6)逆序产生n个节点的链表\n");
 		printf("(0)退出\n");
 
 		scanf("%d", &o);
@@ -156,6 +165,7 @@ int main() {
 			{
 				printf("链表构造成功\n");
 				La = CreatList_L(La);   //La得到链表头指针
+				printf("La首元节点为：%d\n", La->data);
 			}
 			break;
 		case 2:
@@ -177,6 +187,14 @@ int main() {
 			printf("移除链表第i个元素\n");
 			scanf("%d", &i);
 			ListDelete_L(La, i);
+			break;
+		case 6:
+			printf("随机生成长度为n的链表\n");
+			InitList_L(&Lb);
+			scanf("%d", &i);
+			Lb = ReverseCreateList_L(Lb, i);
+			PrintList_L(Lb);
+			printf("Lb首元节点为：%d\n", Lb->data);
 			break;
 		case 0:
 			break;
