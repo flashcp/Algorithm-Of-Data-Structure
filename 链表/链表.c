@@ -1,18 +1,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct {
+typedef struct LNode {
 	int data;
 	struct LNode *next;
 }LNode, *LinkList;
 
-int InitList_L(LinkList **LN) {
-	*LN = NULL;
+int InitList_L(LinkList L) {
+	L = NULL;
 	printf("初始化成功，链表头指针为空\n");
 	return 1;
 }
 
-LinkList CreatList_L(LinkList L) {
+LinkList CreatList_L(LinkList L) {    //尾插法创建链表
 	int x;
 	L = (LNode *)malloc(sizeof(LNode));  //申请新节点
 	LNode *s, *r = L;
@@ -68,7 +68,6 @@ LNode *GetElem_L(LinkList L, int i) {  //算法2.08
 		printf("i is more big than list length\n");
 		return 0;
 	}
-	printf("值为:%d\n", p->data);
 	return p;
 }
 
@@ -92,54 +91,35 @@ void ListDelete_L(LinkList *L, int i) {   //算法2.10
 	return 1;
 }
 
-LNode *ReverseCreateList_L(LNode *LbHead, int n) {  //算法2.11
+LinkList ReverseCreateList_L(LinkList L, int n) {  //算法2.11   （头插法）
 	int i = 0;
-	LNode *p1;
-	LbHead = (int *)malloc(sizeof(LNode));
-	LbHead->next = NULL;
+	LNode *p;
+	L = (int *)malloc(sizeof(LNode));
+	L->next = NULL;
 	for ( i; i < n; i++)
 	{
-		p1 = (int *)malloc(sizeof(LNode));
-		p1->data = rand()%10;  //random function
-		p1->next = LbHead->next;
-		LbHead->next = p1;
+		p = (int *)malloc(sizeof(LNode));
+		p->data = rand()%10;  //random function
+		printf("created random num is:%d\n", p->data);
+		p->next = L->next;
+		L->next = p;
 	}
-	printf("creatList successful\n");
-	return LbHead->next;
+	return L;
 }
 
+int LinkListLength(LinkList L) {   //获取链表长度
+	int i = 0;
+	LNode *p = L->next;
+	while (p != NULL)
+	{
+		i++;
+		p = p->next;
+	}
+	return i;
+}
+
+
 LNode *MergeList_l(LNode *LaHead, LNode *LbHead, LNode *LcHead) {  //算法2.12
-	//LNode *pa, *pb, *pc, *pd;
-	//pa = LaHead;
-	//pb = LbHead;
-	//pc = (int *)malloc(sizeof(LNode));
-	//LcHead = pc;
-	////LcHead = (int *)malloc(sizeof(LNode));
-	////LcHead->next = NULL;
-	//while (pa && pb)
-	//{
-	//	if (pa->data <= pb->data)
-	//	{
-	//		pc->next = pa;
-	//		//pd = pa;
-	//		pa = pa->next;
-	//	}
-	//	else
-	//	{
-	//		pc->next = pb;
-	//		//pc = pb;
-	//		pb = pb->next;
-	//	}
-	//	
-	//	pc = pc->next;
-	//	pc = (int *)malloc(sizeof(LNode));
-	//}
-	//pc->next = pa ? pa : pb;
-	//free(LbHead);
-	//printf("MergeList successful\n");
-	//return pc->next;
-
-
 	//该代码生效，但问题是我没有设置头节点，在该代码下第一个元素会被
 	//	忽略。接下来我的主要问题是修改创建链表代码，将lhead设置成头节点
 	//而不是首元节点
@@ -161,9 +141,94 @@ LNode *MergeList_l(LNode *LaHead, LNode *LbHead, LNode *LcHead) {  //算法2.12
 	return LcHead;
 }
 
+//---------------------------------------------------------------------------王道习题
+
+void InvertPrintf(LinkList L) {
+	/*int Length = LinkListLength(L);
+	int i = Length;
+	LNode *p;
+	for ( i; i > 0; i--)
+	{
+	p = GetElem_L(L, i);
+	printf("倒数第%d个值是：%d\n", i, p->data);
+	}
+	return 1;*/
+
+	if (L->next != NULL)    //课本算法
+	{
+		InvertPrintf(L->next);
+	}
+	printf(L->data);
+}
+
+void DeleteAreaNum(LinkList L, int min, int max) {   //wangdao2.2.7
+	LNode *pre = L, *p = L->next;
+	while (p != NULL)
+	{
+		if (p->data > min && p->data < max)
+		{
+			pre->next = p->next;
+			free(p);
+			p = pre->next;
+		}
+		else
+		{
+			pre = p;
+			p = p->next;
+		}
+	}
+	return L;
+}
+
+void PrintfIncreaseingList(LinkList L) {
+	LNode *pre;
+	LNode *p = L->next;
+	LNode *r = p->next;
+	p->next = NULL;
+	p = r;
+
+	while (p != NULL)
+	{
+		r = p->next;
+		pre = L;
+		while (pre->next != NULL && p->data > pre->next->data)
+		{
+			pre = pre->next;
+		}
+		p->next = pre->next;
+		pre->next = p;
+		p = r;
+	}
+	return L;
+}
+
+void SeparateList(LinkList La,LinkList Lb) {
+	Lb = (LNode *)malloc(sizeof(LNode));
+	LNode *p = La->next;
+	LNode *r = Lb;
+	LNode *odd, *even;
+	while (p!=NULL)
+	{
+		odd = p;
+		even = p->next;
+		odd->next = even->next;
+
+		r->next = even;
+		r = even;
+
+		p = p->next;
+		if (p == NULL || p->next == NULL)
+		{
+			break;
+		}
+	}
+	r->next = NULL;
+	return La;
+}
+
 int main() {
 	LinkList *La , *Lb, *Lc;
-	int i, e, o = 1;
+	int i, j, e, o = 1;
 	while (o != 0)
 	{
 		printf("(1)创建链表\n");
@@ -171,13 +236,22 @@ int main() {
 		printf("(3)输出链表第i个值\n");
 		printf("(4)链表第i个元素之前插入元素e\n");
 		printf("(5)移除链表第i个元素\n");
-		printf("(6)逆序产生n个节点的链表\n");
+		printf("(6)逆序产生n个节点的链表(尾插法)\n");
 		printf("(7)归并链表La,Lb，并按递增排列\n");
+		printf("(8)逆序输出La\n");  //王道单链表3
+		printf("(100)测试选项\n");
 		printf("(0)退出\n");
 
 		scanf("%d", &o);
 		switch (o)
 		{
+		case 100:
+			printf("开始测试:\n");
+			InitList_L(&Lb);
+			SeparateList(La, Lb);
+			printf("printf:\n");
+			PrintList_L(La);
+			break;
 		case 1:
 			if (InitList_L(&La))
 			{
@@ -218,13 +292,16 @@ int main() {
 			scanf("%d", &i);
 			Lb = ReverseCreateList_L(Lb, i);
 			PrintList_L(Lb);
-			printf("Lb首元节点为：%d\n", Lb);
 			break;
 		case 7:
 			printf("归并链表La,Lb,得到Lc\n");
 			InitList_L(&Lc);
 			Lc = MergeList_l(La, Lb, Lc);
 			PrintList_L(Lc);
+			break;
+		case 8:
+			printf("逆序输出La\n");
+			InvertPrintf(La);
 			break;
 		case 0:
 			break;
