@@ -12,7 +12,6 @@ typedef struct {
 }SqStack;
 
 typedef unsigned char boolean;
-//boolean InitStack(SqStack **S);
 
 int InitStack(SqStack *S) {
 	//S = (SqStack *)malloc(MaxSize * sizeof(Elemtype));
