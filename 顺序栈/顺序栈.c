@@ -6,27 +6,23 @@
 #define true 1
 #define false 0
 
-typedef struct SqStack {
-	Elemtype *data;
-	int length;
+typedef struct {
+	Elemtype data[MaxSize];
 	int top;
 }SqStack;
 
 typedef unsigned char boolean;
-boolean InitStack(SqStack **S);
+//boolean InitStack(SqStack **S);
 
-boolean InitStack(SqStack *S) {
-	S = (SqStack *)malloc(MaxSize * sizeof(Elemtype));
-	if (S == NULL) {
-		return false;
-	}
+int InitStack(SqStack *S) {
+	//S = (SqStack *)malloc(MaxSize * sizeof(Elemtype));
 	S->top = -1;
-	S->length = MaxSize;
+	printf("InitStack successful!\n");
 	return true;
 }
 
 int StackEmpty(SqStack *S) {
-	if (S->top=-1)
+	if (S->top == -1)
 	{
 		printf("yes!\n");
 		return true;
@@ -39,17 +35,41 @@ int StackEmpty(SqStack *S) {
 }
 
 int Push(SqStack *S, Elemtype x) {
+	if (S->top == MaxSize - 1)
+	{
+		return false;
+	}
 	S->data[++S->top] = x;
-	printf("successful!\n");
+	printf("push successful!\n");
 	return true;
+}
+
+int Pop(SqStack *S, Elemtype x) {
+	if (S->top == -1)
+	{
+		return false;
+	}
+	x = S->data[S->top--];
+	printf("%d\n", x);
+	printf("pop successful!\n");
+	return x;
+}
+
+int GetTop(SqStack *S, Elemtype x) {
+	if (S->top == -1)
+	{
+		return false;
+	}
+	x = S->data[S->top];
+	return x;
 }
 
 void PrintStack(SqStack *S) {
 	for (; S->top > -1; S->top--)
 	{
-		printf("%d\n", *S->data);
+		printf("%d\n", S->data[S->top]);
 	}
-	printf("successful!\n");
+	printf("PrintStack successful,Now this stack is empty!\n");
 	return true;
 }
 
@@ -57,39 +77,44 @@ void PrintStack(SqStack *S) {
 int main() {
 	int i, j, o = 1;
 	int temp;
-	SqStack *s;
+	SqStack s;      //顺序栈不需要使用结构体指针
+					//调用时直接&传形参
 	InitStack(&s);
-	while (o!=0)
+	while (o != 0)
 	{
 		printf("(1)Judge the stack is empty!\n");
 		printf("(2)push num in stack!\n");
-		printf("(3)printf stack num!\n");
+		printf("(3)pop a num from stack!\n");
+		printf("(4)printf stack num!\n");
+		printf("(5)get num of top stack!\n");
 		printf("(0)exit!\n");
 		scanf("%d", &o);
 		switch (o)
 		{
 		case 1:
-			StackEmpty(s);
+			StackEmpty(&s);
 			break;
 		case 2:
 			printf("please put in num\n");
 			scanf("%d", &temp);
-			Push(s, temp);
+			Push(&s, temp);
 			break;
 		case 3:
-			PrintStack(&s);
+			Pop(&s, temp);
+			break;
+		case 4:
+			PrintStack(&s);    //输出后栈空
+			break;
+		case 5:
+			GetTop(&s, temp);
+			printf("栈顶是：%d\n", temp);
 			break;
 		case 0:
 			break;
-		
+
 		}
 	}
 }
-
-
-
-
-
 
 
 
